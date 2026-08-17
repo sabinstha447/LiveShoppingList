@@ -39,14 +39,46 @@ namespace LiveShoppingList.Controllers
 
         }
 
-        //[HttpPut]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditShoppingList(int id, [FromBody] ShoppingItemsDto dto)
+        {
+            var findItems = await _context.ShoppingItems.FindAsync(id);
+            if (findItems == null)
+            {
+                return NotFound();
+            }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetListByID()
-        //{
+            findItems.Name = dto.Name;
+            findItems.Quantity = dto.Quantity;
+            await _context.SaveChangesAsync();
+            return NoContent();
+          
+        }
 
-        //}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetListByID( int id)
+        {
+            var findItems = await _context.ShoppingItems.FindAsync(id);
+            if(findItems == null)
+            {
+                return NotFound();
+            }
+            return Ok(findItems);
 
-        //[HttpDelete]
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DelShopItem( int id)
+        {
+            var delItem = await _context.ShoppingItems.FindAsync(id);
+            if(delItem == null)
+            {
+                return NotFound();
+            }
+             _context.ShoppingItems.Remove(delItem);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
